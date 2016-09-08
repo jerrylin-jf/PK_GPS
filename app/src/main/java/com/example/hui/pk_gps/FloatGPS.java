@@ -40,7 +40,6 @@ public class FloatGPS extends Service {
         Log.i("FloatGPS", "oncreat");
         super.onCreate();
         createFloatView();
-       // onLocationSetting(mockLocation);
     }
 
     @Override
