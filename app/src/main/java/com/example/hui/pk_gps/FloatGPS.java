@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.location.Location;
+
+import com.gcssloop.widget.RockerView;
 /**
  * Created by Hui on 9/7/2016.
  */
@@ -63,44 +65,33 @@ public class FloatGPS extends Service {
         LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
         mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout, null);
         mWindowManager.addView(mFloatLayout, wmParams);
-        btn_UP = (Button)mFloatLayout.findViewById(R.id.up_btn);
-        btn_LEFT = (Button)mFloatLayout.findViewById(R.id.left_btn);
-        btn_DOWN = (Button)mFloatLayout.findViewById(R.id.down_btn);
-        btn_RIGHT = (Button)mFloatLayout.findViewById(R.id.right_btn);
 
         mFloatLayout.measure(View.MeasureSpec.makeMeasureSpec(0,
                 View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0,
                 View.MeasureSpec.UNSPECIFIED));
 
+        //Rocker
+        RockerView rocker = (RockerView) mFloatLayout.findViewById(R.id.rocker);
+        if (null != rocker){
+            rocker.setListener(new RockerView.RockerListener() {
+                @Override
+                public void callback(int eventType, int currentAngle) {
+                    switch (eventType) {
+                        case RockerView.EVENT_ACTION:
 
-        btn_UP.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("FloatGPS", "click up_btn");
-            }
-        });
+                            Log.e("EVENT_ACTION-------->", "angle="+currentAngle);
+                            break;
+                        case RockerView.EVENT_CLOCK:
 
-        btn_LEFT.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("FloatGPS", "click left_btn");
+                            Log.e("EVENT_CLOCK", "angle="+currentAngle);
+                            break;
+                    }
+                }
+            });
+        }
 
-            }
-        });
 
-        btn_DOWN.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("FloatGPS", "click down_btn");
-            }
-        });
 
-        btn_RIGHT.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("FloatGPS", "click right_btn");
-            }
-        });
     }
 
     @Override

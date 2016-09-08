@@ -16,7 +16,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.gcssloop.widget.RockerView;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,25 +35,7 @@ public class MainActivity extends AppCompatActivity {
         Button start = (Button)findViewById(R.id.start_btn);
         Button end = (Button)findViewById(R.id.end_btn);
 
-        //Rocker
-        RockerView rocker = (RockerView) findViewById(R.id.rocker);
-        if (null != rocker){
-            rocker.setListener(new RockerView.RockerListener() {
-                @Override
-                public void callback(int eventType, int currentAngle) {
-                    switch (eventType) {
-                        case RockerView.EVENT_ACTION:
 
-                            Log.e("EVENT_ACTION-------->", "angle="+currentAngle);
-                            break;
-                        case RockerView.EVENT_CLOCK:
-
-                            Log.e("EVENT_CLOCK", "angle="+currentAngle);
-                            break;
-                    }
-                }
-            });
-        }
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
