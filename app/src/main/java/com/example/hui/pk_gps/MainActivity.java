@@ -1,6 +1,7 @@
 package com.example.hui.pk_gps;
 
 import android.location.Criteria;
+import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Build;
@@ -15,10 +16,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.gcssloop.widget.RockerView;
+
 public class MainActivity extends AppCompatActivity {
 
     public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
     private LocationManager locationManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,26 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity", "after mock");
         Button start = (Button)findViewById(R.id.start_btn);
         Button end = (Button)findViewById(R.id.end_btn);
+
+        //Rocker
+        RockerView rocker = (RockerView) findViewById(R.id.rocker);
+        if (null != rocker){
+            rocker.setListener(new RockerView.RockerListener() {
+                @Override
+                public void callback(int eventType, int currentAngle) {
+                    switch (eventType) {
+                        case RockerView.EVENT_ACTION:
+
+                            Log.e("EVENT_ACTION-------->", "angle="+currentAngle);
+                            break;
+                        case RockerView.EVENT_CLOCK:
+
+                            Log.e("EVENT_CLOCK", "angle="+currentAngle);
+                            break;
+                    }
+                }
+            });
+        }
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override

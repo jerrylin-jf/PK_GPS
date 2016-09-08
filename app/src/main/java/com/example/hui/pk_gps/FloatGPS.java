@@ -3,6 +3,7 @@ package com.example.hui.pk_gps;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.location.LocationManager;
 import android.os.IBinder;
 import android.util.Log;
 import android.util.MutableFloat;
@@ -17,6 +18,7 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.location.Location;
 /**
  * Created by Hui on 9/7/2016.
  */
@@ -24,6 +26,9 @@ public class FloatGPS extends Service {
     LinearLayout mFloatLayout;
     WindowManager.LayoutParams wmParams;
     WindowManager mWindowManager;
+
+
+
 
     Button btn_UP;
     Button btn_LEFT;
@@ -35,6 +40,7 @@ public class FloatGPS extends Service {
         Log.i("FloatGPS", "oncreat");
         super.onCreate();
         createFloatView();
+       // onLocationSetting(mockLocation);
     }
 
     @Override
@@ -79,6 +85,7 @@ public class FloatGPS extends Service {
             @Override
             public void onClick(View v) {
                 Log.i("FloatGPS", "click left_btn");
+
             }
         });
 
@@ -104,4 +111,5 @@ public class FloatGPS extends Service {
             mWindowManager.removeView(mFloatLayout);
         }
     }
+
 }
