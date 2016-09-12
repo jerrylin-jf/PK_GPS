@@ -1,10 +1,13 @@
 package com.example.hui.pk_gps;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.location.LocationManager;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.MutableFloat;
 import android.view.Gravity;
@@ -29,13 +32,9 @@ public class FloatGPS extends Service {
     WindowManager.LayoutParams wmParams;
     WindowManager mWindowManager;
 
+    String providerStr = LocationManager.GPS_PROVIDER;
+    Location mockLocation = new Location(providerStr);
 
-
-
-    Button btn_UP;
-    Button btn_LEFT;
-    Button btn_DOWN;
-    Button btn_RIGHT;
 
     @Override
     public void onCreate() {
@@ -58,7 +57,7 @@ public class FloatGPS extends Service {
         wmParams.gravity = Gravity.LEFT | Gravity.TOP;
 
         wmParams.x = 700;
-        wmParams.y = 1000;
+        wmParams.y = 500;
         wmParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         wmParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
@@ -78,20 +77,31 @@ public class FloatGPS extends Service {
                 public void callback(int eventType, int currentAngle) {
                     switch (eventType) {
                         case RockerView.EVENT_ACTION:
+                            if(currentAngle<=30 || currentAngle>=330) {
+                                mockLocation.setLongitude(mockLocation.getLongitude()+5);
+                                Log.e("EVENT_ACTION-------->", "+ right");
+                            }
+                            if(currentAngle>=60 && currentAngle<=120) {
+                                mockLocation.setLatitude(mockLocation.getLatitude()+5);
+                                Log.e("EVENT_ACTION-------->", "+ up");
+                            }
+                            if(currentAngle>=150 && currentAngle<=200) {
+                                mockLocation.setLongitude(mockLocation.getLongitude()-5);
+                                Log.e("EVENT_ACTION-------=>", "+ left");
+                            }
 
-                            Log.e("EVENT_ACTION-------->", "angle="+currentAngle);
+                            if(currentAngle>=240 && currentAngle<=300) {
+                                mockLocation.setLatitude(mockLocation.getLatitude()-5);
+                                Log.e("EVENT_ACTION-------->", "+ down");
+                            }
                             break;
                         case RockerView.EVENT_CLOCK:
-
                             Log.e("EVENT_CLOCK", "angle="+currentAngle);
                             break;
                     }
                 }
             });
         }
-
-
-
     }
 
     @Override
