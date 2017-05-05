@@ -124,10 +124,11 @@ public class FloatGPS extends Service {
         //Rocker
         RockerView rocker = (RockerView) mFloatLayout.findViewById(R.id.rocker);
 
-        if (null != rocker) {
+        if (null != rocker){
             rocker.setListener(new RockerView.RockerListener() {
+
                 @Override
-                public void callback(int eventType, int currentAngle) {
+                public void callback(int eventType, int currentAngle,  float currentDistance) {
                     switch (eventType) {
                         case RockerView.EVENT_ACTION:
 
