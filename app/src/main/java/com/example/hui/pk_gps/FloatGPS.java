@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.location.Location;
+import android.location.LocationListener;
 
 import com.gcssloop.widget.RockerView;
 
@@ -46,14 +48,14 @@ public class FloatGPS extends Service {
 
     double x_Latitude;
     double y_Longitude;
-    String providerStr = LocationManager.GPS_PROVIDER;
-    Location mockLocation = new Location(providerStr);
+
 
 
     @Override
     public void onCreate() {
         super.onCreate();
         createFloatView();
+
     }
 
     @Override
@@ -82,21 +84,11 @@ public class FloatGPS extends Service {
                 View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0,
                 View.MeasureSpec.UNSPECIFIED));
 
-        mockLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        System.out.println("do InitLocation");
-        List<String> providerList = mockLocationManager.getProviders(true);
-        if (providerList.contains(LocationManager.GPS_PROVIDER)) {
-            provider = LocationManager.GPS_PROVIDER;
-            Toast.makeText(this, "provider is GPS", Toast.LENGTH_SHORT).show();
-        } else if (providerList.contains(LocationManager.NETWORK_PROVIDER)) {
-            provider = LocationManager.NETWORK_PROVIDER;
-            Toast.makeText(this, "provider is NETWORK", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "No location provider to use", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        System.out.println("do permission checked");
+        getLocationProvider();
+
+
+        Log.i("Permission", "do permission check");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -109,17 +101,45 @@ public class FloatGPS extends Service {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
         final Location location = mockLocationManager.getLastKnownLocation(provider);
-        System.out.println("provider: " + provider);
-        System.out.println("location: " + location);
 
-        if(location != null) {
-            showLocation(location);
+        Log.i("mockINFO", "provider: " + provider);
+        Log.i("mockINFO", "location: " + location);
+
+        if (location != null) {
+            x_Latitude = location.getLatitude();
+            y_Longitude = location.getLongitude();
+        } else {
+
         }
 
-        x_Latitude = location.getLatitude();
-        y_Longitude = location.getLongitude();
+
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+        };
+
+        if (location  == null)
+        {
+            mockLocationManager.requestLocationUpdates("gps", 60000, 1, locationListener);
+        }
+
 
         //Rocker
         RockerView rocker = (RockerView) mFloatLayout.findViewById(R.id.rocker);
@@ -133,32 +153,32 @@ public class FloatGPS extends Service {
                         case RockerView.EVENT_ACTION:
 
                             if (currentAngle <= 30 || currentAngle >= 330) {
-                                y_Longitude += 0.00005;
+                                y_Longitude += 0.05;
                                 location.setLatitude(x_Latitude);
                                 showLocation(location);
-                                Log.e("EVENT_ACTION-------->", "+ right");
+                                Log.i("EVENT_ACTION-------->", "+ right");
                                 pushMockLocation(x_Latitude, y_Longitude);
                             }
                             if (currentAngle >= 60 && currentAngle <= 120) {
-                                x_Latitude += 0.00005;
+                                x_Latitude += 0.05;
                                 location.setLongitude(y_Longitude);
                                 showLocation(location);
-                                Log.e("EVENT_ACTION-------->", "+ up");
+                                Log.i("EVENT_ACTION-------->", "+ up");
                                 pushMockLocation(x_Latitude, y_Longitude);
                             }
                             if (currentAngle >= 150 && currentAngle <= 200) {
-                                y_Longitude -= 0.00005;
+                                y_Longitude -= 0.05;
                                 location.setLatitude(x_Latitude);
                                 showLocation(location);
-                                Log.e("EVENT_ACTION-------=>", "+ left");
+                                Log.i("EVENT_ACTION-------=>", "+ left");
                                 pushMockLocation(x_Latitude, y_Longitude);
                             }
 
                             if (currentAngle >= 240 && currentAngle <= 300) {
-                                x_Latitude -= 0.00005;
+                                x_Latitude -= 0.05;
                                 location.setLongitude(y_Longitude);
                                 showLocation(location);
-                                Log.e("EVENT_ACTION-------->", "+ down");
+                                Log.i("EVENT_ACTION-------->", "+ down");
                                 pushMockLocation(x_Latitude, y_Longitude);
                             }
                             break;
@@ -186,7 +206,7 @@ public class FloatGPS extends Service {
     }
 
     private void pushMockLocation (double x, double y) {
-        mockGPS = new MockLocationProvider("gps", FloatGPS.this);
+        mockGPS = new MockLocationProvider(provider, FloatGPS.this);
         if (ActivityCompat.checkSelfPermission(FloatGPS.this
                 , Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -197,8 +217,28 @@ public class FloatGPS extends Service {
             Log.i("FloatGPS", "requestLocationUpdates NOT ALLOW");
             return;
         }
-
         mockGPS.pushLocation(x, y);
     }
+
+    private void getLocationProvider() {
+        mockLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Log.i("LocationManager", "Initial mockLocationManager");
+
+        List<String> providerList = mockLocationManager.getProviders(true);
+
+        if (providerList.contains(LocationManager.NETWORK_PROVIDER)) {
+            provider = LocationManager.NETWORK_PROVIDER;
+            Toast.makeText(this, "provider is NETWORK", Toast.LENGTH_SHORT).show();
+        } else
+            if (providerList.contains(LocationManager.GPS_PROVIDER)) {
+            provider = LocationManager.GPS_PROVIDER;
+            Toast.makeText(this, "provider is GPS", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "no location provider to use", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+    }
+
 
 }
