@@ -191,7 +191,8 @@ public class FloatGPS extends Service {
         if (mFloatLayout != null) {
             mWindowManager.removeView(mFloatLayout);
         }
-        mockLocationManager.removeTestProvider(provider);
+        mockGPS = new MockLocationProvider("gps", FloatGPS.this);
+        mockGPS.shutdown();
     }
 
     private void showLocation(final Location location) {

@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
                     new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION}
                     , MY_PERMISSION_ACCESS_COARSE_LOCATION);
         }
-
     }
 
 
