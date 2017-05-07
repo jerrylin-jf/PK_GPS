@@ -26,8 +26,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
-    private LocationManager locationManager;
-    private String provider;
+
+    /* GPS Constant Permission */
+    private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
+    private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
 
 
     @Override
@@ -66,7 +68,22 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
         }
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}
+                    , MY_PERMISSION_ACCESS_FINE_LOCATION);
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION}
+                    , MY_PERMISSION_ACCESS_COARSE_LOCATION);
+        }
+
     }
+
 
 
 

@@ -38,6 +38,8 @@ import java.util.List;
  * Created by Hui on 9/7/2016.
  */
 public class FloatGPS extends Service {
+
+
     LinearLayout mFloatLayout;
     WindowManager.LayoutParams wmParams;
     WindowManager mWindowManager;
@@ -48,7 +50,6 @@ public class FloatGPS extends Service {
 
     double x_Latitude;
     double y_Longitude;
-
 
 
     @Override
@@ -86,7 +87,6 @@ public class FloatGPS extends Service {
 
 
         getLocationProvider();
-
 
         Log.i("Permission", "do permission check");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -237,8 +237,10 @@ public class FloatGPS extends Service {
             Toast.makeText(this, "no location provider to use", Toast.LENGTH_SHORT).show();
             return;
         }
-
     }
+
+
+
 
 
 }
