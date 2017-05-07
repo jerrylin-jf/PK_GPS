@@ -92,15 +92,9 @@ public class FloatGPS extends Service {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
+
         final Location location = mockLocationManager.getLastKnownLocation(provider);
 
         Log.i("mockINFO", "provider: " + provider);
@@ -153,21 +147,21 @@ public class FloatGPS extends Service {
                         case RockerView.EVENT_ACTION:
 
                             if (currentAngle <= 30 || currentAngle >= 330) {
-                                y_Longitude += 0.05;
+                                y_Longitude += 0.0005;
                                 location.setLatitude(x_Latitude);
                                 showLocation(location);
                                 Log.i("EVENT_ACTION-------->", "+ right");
                                 pushMockLocation(x_Latitude, y_Longitude);
                             }
                             if (currentAngle >= 60 && currentAngle <= 120) {
-                                x_Latitude += 0.05;
+                                x_Latitude += 0.0005;
                                 location.setLongitude(y_Longitude);
                                 showLocation(location);
                                 Log.i("EVENT_ACTION-------->", "+ up");
                                 pushMockLocation(x_Latitude, y_Longitude);
                             }
                             if (currentAngle >= 150 && currentAngle <= 200) {
-                                y_Longitude -= 0.05;
+                                y_Longitude -= 0.0005;
                                 location.setLatitude(x_Latitude);
                                 showLocation(location);
                                 Log.i("EVENT_ACTION-------=>", "+ left");
@@ -175,7 +169,7 @@ public class FloatGPS extends Service {
                             }
 
                             if (currentAngle >= 240 && currentAngle <= 300) {
-                                x_Latitude -= 0.05;
+                                x_Latitude -= 0.0005;
                                 location.setLongitude(y_Longitude);
                                 showLocation(location);
                                 Log.i("EVENT_ACTION-------->", "+ down");
@@ -197,6 +191,7 @@ public class FloatGPS extends Service {
         if (mFloatLayout != null) {
             mWindowManager.removeView(mFloatLayout);
         }
+        mockLocationManager.removeTestProvider(provider);
     }
 
     private void showLocation(final Location location) {
@@ -206,7 +201,7 @@ public class FloatGPS extends Service {
     }
 
     private void pushMockLocation (double x, double y) {
-        mockGPS = new MockLocationProvider(provider, FloatGPS.this);
+        mockGPS = new MockLocationProvider("gps", FloatGPS.this);
         if (ActivityCompat.checkSelfPermission(FloatGPS.this
                 , Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
